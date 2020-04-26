@@ -31,16 +31,25 @@ def bot(request):
 		attach = ""
 		# lastMsg = vkAPI.messages.getHistory(user_id = userID, count = 2, v=5.103)["items"][1]["text"]
 
+		conn = sqlite3.connect('db.sqlite')
+		cur = conn.cursor()
+		
+		cur.execute("SELECT msg FROM answer")
+		dbMsg = cur.fetchall()
+		
 
 		if msg == "/list":
-			conn = sqlite3.connect('db.sqlite')
-			cur = conn.cursor()
 			query = """
-			SELECT * FROM answer
+			SELECT msg FROM answer
 			"""
 			cur.execute(query)
 			answ = cur.fetchall()
-			conn.close()
+			print(answ)
+		
+		# Ориентир на этот запрос
+		for msg in dbMsg:
+			cur.execute("SELECT answ FROM answer WHERE msg={0}".format(msg))
+			answ = cur.fetchall()
 		# if lastMsg == "Зимой и летом одним цветом. Что это?":
 		# 	if msg == "Ёлка":
 		# 		answ = "Поздравляю! Ты угадал!"
@@ -64,6 +73,7 @@ def bot(request):
 		# elif msg == "/riddle":
 		# 	answ = "Зимой и летом одним цветом. Что это?"
 			
+		conn.close()
 		sendAnswer(userID, answ, attach)
 
 	return HttpResponse("ok")
