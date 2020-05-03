@@ -5,7 +5,7 @@ import sqlite3
 # Добавить 5 машин, и вывести на экран через result
 
 # Подключаемся к нашей базе данных
-conn = sqlite3.connect('db.sqlite')
+conn = sqlite3.connect('cars')
 # Создаём курсор для нашего подключения
 cur = conn.cursor()
 

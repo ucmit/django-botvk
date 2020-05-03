@@ -29,6 +29,23 @@ def bot(request):
 		answ = ""
 		attach = ""		
 
+		##ЗАДАНИЕ НАУЧИТЬ БОТА НОВЫМ СЛОВАМ ОТ ПОЛЬЗОВАТЕЛЯ
+		if msg[:6] == "/teach":
+			pos = msg.find("?")
+			newMsg = msg[7:pos].replace(" ", "")
+			newAnsw = msg[pos+1:]
+			database.insert("answer", ["msg", "answ"], [newMsg, newAnsw])
+			answ = "Я добавил новый запрос '{0}', давай попробуй =)".format(newMsg)
+
+		if answ == "":
+			for i in database.get("answer"):
+				if msg == i["msg"]:
+					answ = i["answ"]
+					break
+				else:
+					answ = database.get("answer")#"Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
+		
+
 		sendAnswer(userID, answ, attach)
 
 	return HttpResponse("ok")
