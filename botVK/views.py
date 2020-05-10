@@ -24,31 +24,31 @@ def bot(request):
 	if body["type"] == "message_new":
 		
 		msg = body["object"]["message"]["text"]
+		payload = body["object"]["message"]["payload"]
 		userID = body["object"]["message"]["from_id"]
 		userInfo = vkAPI.users.get(user_ids = userID, v=5.103)[0]
 		answ = ""
 		attach = ""		
 
+		if payload == """{"command":"start"}""":
+			keyboardStart(request, userID)
 
-		
 
+		# #Учим бота новым словам
+		# if msg[:6] == "/teach":
+		# 	pos = msg.find("?")
+		# 	newMsg = msg[7:pos].replace(" ", "")
+		# 	newAnsw = msg[pos+1:]
+		# 	database.insert("answer", ["msg", "answ"], [newMsg, newAnsw])
+		# 	answ = "Я добавил новый запрос '{0}', давай попробуй =)".format(newMsg)
 
-
-		#Учим бота новым словам
-		if msg[:6] == "/teach":
-			pos = msg.find("?")
-			newMsg = msg[7:pos].replace(" ", "")
-			newAnsw = msg[pos+1:]
-			database.insert("answer", ["msg", "answ"], [newMsg, newAnsw])
-			answ = "Я добавил новый запрос '{0}', давай попробуй =)".format(newMsg)
-
-		if answ == "":
-			for i in database.get("answer"):
-				if msg == i["msg"]:
-					answ = i["answ"]
-					break
-				else:
-					answ = "Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
+		# if answ == "":
+		# 	for i in database.get("answer"):
+		# 		if msg == i["msg"]:
+		# 			answ = i["answ"]
+		# 			break
+		# 		else:
+		# 			answ = "Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
 
 		sendAnswer(userID, answ, attach)
 
@@ -58,6 +58,29 @@ def bot(request):
 
 def sendAnswer(userID, answ = "", attach = "", keyboard = ""):
 	vkAPI.messages.send(user_id = userID, message = answ, attachment=attach, keyboard=keyboard, random_id = random.randint(1, 99999999999999999), v=5.103)
+
+def keyboardStart(request, userID):
+	answ = "Привет! Выбери свою группу пользователя!"
+	keyboard = json.dumps({
+		"one_time": True,
+
+		"buttons":[[
+			{
+				"action": {
+					"type":"text",
+					"label":"Администратор",
+					"payload": """{"command":"admin"}"""
+				},
+				"color":"negative"
+			}
+		]]
+	})
+	
+
+
+	sendAnswer(userID, answ, keyboard = keyboard)
+
+
 
 
 # lastMsg = vkAPI.messages.getHistory(user_id = userID, count = 2, v=5.103)["items"][1]["text"]
