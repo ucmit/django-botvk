@@ -3,7 +3,7 @@ import os
 
 # !_______Добавляем адрес как доверенный__________________!
 # ssh -R 80:127.0.0.1:8000 botvkulan@ssh.localhost.run
-ALLOWED_HOSTS = ['botvkulan-ba1e538c.localhost.run']
+ALLOWED_HOSTS = ['botvkulan-492fcdeb.localhost.run']
 
 
 

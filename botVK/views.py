@@ -18,7 +18,7 @@ def bot(request):
 
 	# Подтверждение сервера
 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
-		return HttpResponse("2cd42a34")
+		return HttpResponse("b940e67c")
 
 	# Определяем тип запроса. В данном случае "новое сообщение"
 	if body["type"] == "message_new":
@@ -29,7 +29,12 @@ def bot(request):
 		answ = ""
 		attach = ""		
 
-		##ЗАДАНИЕ НАУЧИТЬ БОТА НОВЫМ СЛОВАМ ОТ ПОЛЬЗОВАТЕЛЯ
+
+		
+
+
+
+		#Учим бота новым словам
 		if msg[:6] == "/teach":
 			pos = msg.find("?")
 			newMsg = msg[7:pos].replace(" ", "")
@@ -43,8 +48,7 @@ def bot(request):
 					answ = i["answ"]
 					break
 				else:
-					answ = database.get("answer")#"Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
-		
+					answ = "Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
 
 		sendAnswer(userID, answ, attach)
 
@@ -52,8 +56,8 @@ def bot(request):
 # ---Конец функции---
 	
 
-def sendAnswer(userID, answ = "", attach = ""):
-	vkAPI.messages.send(user_id = userID, message = answ, attachment=attach, random_id = random.randint(1, 99999999999999999), v=5.103)
+def sendAnswer(userID, answ = "", attach = "", keyboard = ""):
+	vkAPI.messages.send(user_id = userID, message = answ, attachment=attach, keyboard=keyboard, random_id = random.randint(1, 99999999999999999), v=5.103)
 
 
 # lastMsg = vkAPI.messages.getHistory(user_id = userID, count = 2, v=5.103)["items"][1]["text"]
@@ -79,3 +83,10 @@ def sendAnswer(userID, answ = "", attach = ""):
 # 	answ = "Your name is {0} {1}".format(userInfo["first_name"], userInfo["last_name"])
 # elif msg == "/riddle":
 # 	answ = "Зимой и летом одним цветом. Что это?"
+
+# def confirm(request):
+# 	body = json.loads(request.body)
+# 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
+# 		return HttpResponse("2cd42a34")
+# 	else:
+# 		return HttpResponse("ok")
