@@ -6,7 +6,6 @@ import os
 ALLOWED_HOSTS = ['botvkulan-8f1d2df8.localhost.run', "127.0.0.1"]
 
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'h)pmtabv3fhm+x#r3e6#drt=p7fag0rw4q40#-eot6g_e&&+-5'
 DEBUG = True

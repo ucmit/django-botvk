@@ -143,8 +143,19 @@ def keyboardStart(request, userID):
 # ========================================================================================================================
 
 # Рендер нашей страницы login.html
+
+lg = {
+	"success": False,
+	"groups": database.get("groups")
+}
 def login(request):
-	return render(request, "login.html")
+	global lg
+
+	if "admin" == request.GET.get("login") and "0000" == request.GET.get("password"):
+		lg["success"] = True
+	
+	print(lg)
+	return render(request, "login.html", lg)
 
 
 

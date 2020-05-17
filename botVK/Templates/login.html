@@ -8,11 +8,17 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  </head>
+    <style>
+        #success{
+            display: none;
+            transition: 5s ease-out;
+        }
+    </style>
+    </head>
   <body>
 
-    <div class="container">
-        <form>
+    <div class="container" {% if success is True %} id="success" {% endif %}>
+        <form method="GET">
             <h5>Логин</h5>
             <div class="form-group row">
                 <label for="inputName" class="col-sm-1-12 col-form-label">Логин: </label>
@@ -33,6 +39,51 @@
             </div>
         </form>
     </div>
+
+
+    <div class="container" {% if success is False %} id="success" {% endif %}>
+        <form method="GET">
+            <div class="form-group row">
+                <div class="col-sm-1-12">
+                    <select name="groups" id="groups">
+                       {% for i in groups %}
+                            <option value="{{i.id}}">{{i.groupName}}</option>
+                       {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-1-12">
+                    <textarea name="message" id="message" cols="30" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-- TODO: This is for server side, there is another version for browser defaults -->
 
     <!-- Optional JavaScript -->
