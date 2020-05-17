@@ -3,12 +3,7 @@ import os
 
 # !_______Добавляем адрес как доверенный__________________!
 # ssh -R 80:127.0.0.1:8000 botvkulan@ssh.localhost.run
-ALLOWED_HOSTS = ['botvkulan-8f1d2df8.localhost.run']
-
-
-
-
-
+ALLOWED_HOSTS = ['botvkulan-8f1d2df8.localhost.run', "127.0.0.1"]
 
 
 
@@ -36,7 +31,7 @@ ROOT_URLCONF = 'bot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["./botVK/Templates/"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
