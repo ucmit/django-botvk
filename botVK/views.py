@@ -18,52 +18,95 @@ def bot(request):
 
 	# Подтверждение сервера
 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
-		return HttpResponse("b940e67c")
+		return HttpResponse("a6e3a839")
+
 
 	# Определяем тип запроса. В данном случае "новое сообщение"
 	if body["type"] == "message_new":
-		
+		# Основные параметры сообщения
 		msg = body["object"]["message"]["text"]
-		payload = body["object"]["message"]["payload"]
 		userID = body["object"]["message"]["from_id"]
 		userInfo = vkAPI.users.get(user_ids = userID, v=5.103)[0]
-		answ = ""
-		attach = ""		
-
-		if payload == """{"command":"start"}""":
-			keyboardStart(request, userID)
-
-
-		# #Учим бота новым словам
-		# if msg[:6] == "/teach":
-		# 	pos = msg.find("?")
-		# 	newMsg = msg[7:pos].replace(" ", "")
-		# 	newAnsw = msg[pos+1:]
-		# 	database.insert("answer", ["msg", "answ"], [newMsg, newAnsw])
-		# 	answ = "Я добавил новый запрос '{0}', давай попробуй =)".format(newMsg)
-
-		# if answ == "":
-		# 	for i in database.get("answer"):
-		# 		if msg == i["msg"]:
-		# 			answ = i["answ"]
-		# 			break
-		# 		else:
-		# 			answ = "Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
-
-		sendAnswer(userID, answ, attach)
+		
+		# Проверка на наличие полезной нагрузки в сообщении
+		if "payload" in body["object"]["message"]:
+			payload = body["object"]["message"]["payload"]
+			# Загрузка клавиатуры, если команда start
+			if payload == """{"command":"start"}""":
+				keyboardStart(request, userID)
+			else:
+				# Попытка провести добавления пользователя по выбранной группе
+				try:
+					gpid = -1
+					gpname = ""
+					# Взависимости от команды, выбираем группу
+					if payload == """{"command":"admin"}""":
+						gpid = str(1)
+						gpname = "Администратор"
+					elif payload == """{"command":"mentor"}""":
+						gpid = str(2)
+						gpname = "Наставник"
+					elif payload == """{"command":"student"}""":
+						gpid = str(3)
+						gpname = "Ученик"
+					# Добавляем пользователя в группу и сообщаем ему об этом
+					database.insert("user", ["id, groupId"], [str(userID), gpid])
+					speak(request,userID, userInfo, answ = "Вы были добавлены в группу {0}".format(gpname))
+				# Обработка любой ошибки [Скорее всего, пользователь уже есть в группе]
+				except Exception as e:
+					speak(request,userID, userInfo, answ = "Error")
+		# Если нагрузки нет, общаемся с пользователем как обычно 
+		else:
+			speak(request,userID, userInfo, msg)
 
 	return HttpResponse("ok")
 # ---Конец функции---
 	
-
-def sendAnswer(userID, answ = "", attach = "", keyboard = ""):
+# ======================================== Доп. функции ====================================
+# !Функция отправки сообщения!
+def sendAnswer(userID, answ = "", attach = "", keyboard = json.dumps({"buttons":[],"one_time":True})):
 	vkAPI.messages.send(user_id = userID, message = answ, attachment=attach, keyboard=keyboard, random_id = random.randint(1, 99999999999999999), v=5.103)
 
+# !Функция обработки сообщения сообщения!
+def speak(request,userID, userInfo = "", msg = "",  answ = "", attach=""):
+	# Специальные команды бота
+	# #Учим бота новым словам
+	if msg[:6] == "/teach":
+		pos = msg.find("?")
+		newMsg = msg[7:pos].replace(" ", "")
+		newAnsw = msg[pos+1:]
+		database.insert("answer", ["msg", "answ"], [newMsg, newAnsw])
+		answ = "Я добавил новый запрос '{0}', давай попробуй =)".format(newMsg)
+	# #Вывести список всех команд
+	elif msg == "/list":
+		answ = database.get("answer", ["msg"])
+	# #Узнать в какой я группе
+	elif msg == "/whoAmI":
+		answ = """Вы относитесь к группе {0}""".format(database.getGroup(str(userID))[0]["groupName"])
+	# #Посмотреть список пользователей
+	elif msg == "/whoAreThey":
+		answ = """Пользователи:\n"""
+		for i in database.getGroup():
+			answ += """id: {0}, group: {1}\n""".format(i["id"], i["groupName"])
+
+
+	# Поиск ответа в базе
+	if answ == "":
+		for i in database.get("answer"):
+			if msg == i["msg"]:
+				answ = i["answ"]					
+				break
+			else:
+				answ = "Я не знаю такой команды. Можешь научить меня используя команду /teach ЗАПРОС ? ОТВЕТ"
+
+	sendAnswer(userID, answ, attach)
+
+
+# !Функция начальной клавиатуры!
 def keyboardStart(request, userID):
 	answ = "Привет! Выбери свою группу пользователя!"
 	keyboard = json.dumps({
 		"one_time": True,
-
 		"buttons":[[
 			{
 				"action": {
@@ -72,13 +115,28 @@ def keyboardStart(request, userID):
 					"payload": """{"command":"admin"}"""
 				},
 				"color":"negative"
+			},
+			{
+				"action": {
+					"type":"text",
+					"label":"Наставник",
+					"payload": """{"command":"mentor"}"""
+				},
+				"color":"positive"
+			},
+			{
+				"action": {
+					"type":"text",
+					"label":"Ученик",
+					"payload": """{"command":"student"}"""
+				},
+				"color":"primary"
 			}
 		]]
 	})
-	
-
-
 	sendAnswer(userID, answ, keyboard = keyboard)
+
+
 
 
 
@@ -107,9 +165,3 @@ def keyboardStart(request, userID):
 # elif msg == "/riddle":
 # 	answ = "Зимой и летом одним цветом. Что это?"
 
-# def confirm(request):
-# 	body = json.loads(request.body)
-# 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
-# 		return HttpResponse("2cd42a34")
-# 	else:
-# 		return HttpResponse("ok")
