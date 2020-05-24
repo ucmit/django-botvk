@@ -18,7 +18,7 @@ def bot(request):
 
 	# Подтверждение сервера
 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
-		return HttpResponse("a6e3a839")
+		return HttpResponse("d15a31b4")
 
 
 	# Определяем тип запроса. В данном случае "новое сообщение"
@@ -148,13 +148,19 @@ lg = {
 	"success": False,
 	"groups": database.get("groups")
 }
+@csrf_exempt
 def login(request):
 	global lg
-
-	if "admin" == request.GET.get("login") and "0000" == request.GET.get("password"):
-		lg["success"] = True
-	
 	print(lg)
+
+
+	if request.method == "POST":
+		if request.POST.get("login") == "admin" and request.POST.get("password") == "0000":
+			lg["success"] = True
+		elif (request.POST.get("message") and request.POST.get("group")) != None:
+			for user in database.getGroup(groupID = request.POST.get("group")):
+				sendAnswer(user["id"], answ = request.POST.get("message"))
+		
 	return render(request, "login.html", lg)
 
 

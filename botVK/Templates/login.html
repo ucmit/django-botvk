@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Title</title>
@@ -11,41 +11,39 @@
     <style>
         #success{
             display: none;
-            transition: 5s ease-out;
         }
     </style>
     </head>
   <body>
 
     <div class="container" {% if success is True %} id="success" {% endif %}>
-        <form method="GET">
+        <form method="POST">
             <h5>Логин</h5>
             <div class="form-group row">
                 <label for="inputName" class="col-sm-1-12 col-form-label">Логин: </label>
                 <div class="col-sm-1-12">
-                    <input type="text" class="form-control" name="login" id="login" placeholder="...">
+                    <input type="text" class="form-control" name="login" id="login" placeholder="..." autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputName" class="col-sm-1-12 col-form-label">Пароль: </label>
                 <div class="col-sm-1-12">
-                    <input type="text" class="form-control" name="password" id="password" placeholder="...">
+                    <input type="text" class="form-control" name="password" id="password" placeholder="..." autocomplete="off">
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-sm-1-12">
-                    <input type="submit" class="form-control" name="sb" id="sb" placeholder="...">
+                    <input type="submit" class="form-control" name="sb" id="sb">
                 </div>
             </div>
         </form>
     </div>
 
-
     <div class="container" {% if success is False %} id="success" {% endif %}>
-        <form method="GET">
+        <form method="POST">
             <div class="form-group row">
                 <div class="col-sm-1-12">
-                    <select name="groups" id="groups">
+                    <select name="group" id="group">
                        {% for i in groups %}
                             <option value="{{i.id}}">{{i.groupName}}</option>
                        {% endfor %}
@@ -54,12 +52,12 @@
             </div>
             <div class="form-group row">
                 <div class="col-sm-1-12">
-                    <textarea name="message" id="message" cols="30" rows="10"></textarea>
+                    <textarea name="message" id="message" cols="30" rows="10" autocomplete="off"></textarea>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="offset-sm-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary">Отправить</button>
+                    <button type="submit" name="sendMessage" class="btn btn-primary">Отправить</button>
                 </div>
             </div>
         </form>

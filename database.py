@@ -36,18 +36,25 @@ def insert(table_name, cols, data):
     db.commit()
     db.close()
 
-def getGroup(userID = None):
+def getGroup(userID = None, groupID = None):
     db = sqlite3.connect('db.sqlite')
     cur = db.cursor()
 
     query = ""
 
-    if userID == None:
+    if userID == None and groupID == None:
         query = """
             SELECT * FROM groups
             JOIN user
             ON groups.id = user.groupId
         """
+    elif groupID:
+        query = """
+            SELECT * FROM groups
+            INNER JOIN user
+            ON groups.id = user.groupId
+            WHERE user.groupId == '{0}'
+        """.format(groupID) 
     else:
         query = """
             SELECT * FROM groups
@@ -149,3 +156,9 @@ def deleteUser(userID = None):
 # insert("groups", ["groupName"], ["Администратор"])
 # insert("groups", ["groupName"], ["Наставник"])
 # insert("groups", ["groupName"], ["Ученик"])
+
+# ===================
+# print(get("user"))
+# deleteUser(1)
+# deleteUser(2)
+# deleteUser(4)
