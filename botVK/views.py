@@ -18,7 +18,7 @@ def bot(request):
 
 	# Подтверждение сервера
 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
-		return HttpResponse("d15a31b4")
+		return HttpResponse("8a7bcb98")
 
 
 	# Определяем тип запроса. В данном случае "новое сообщение"
@@ -88,6 +88,12 @@ def speak(request,userID, userInfo = "", msg = "",  answ = "", attach=""):
 		answ = """Пользователи:\n"""
 		for i in database.getGroup():
 			answ += """id: {0}, group: {1}\n""".format(i["id"], i["groupName"])
+	elif msg == "/changeMe":
+		# 1) Удалить пользователя из базы
+		database.deleteUser(userID)
+		# 2) Вызвать клавиатуру 
+		keyboardStart(request, userID)
+		return 1
 
 
 	# Поиск ответа в базе
@@ -151,16 +157,17 @@ lg = {
 @csrf_exempt
 def login(request):
 	global lg
-	print(lg)
 
+	if request.method == "GET":
+		if request.GET.get("login") == "admin" and request.GET.get("password") == "0000":
+			lg["success"] = True
 
 	if request.method == "POST":
-		if request.POST.get("login") == "admin" and request.POST.get("password") == "0000":
-			lg["success"] = True
-		elif (request.POST.get("message") and request.POST.get("group")) != None:
+		if (request.POST.get("message") and request.POST.get("group")) != None:
 			for user in database.getGroup(groupID = request.POST.get("group")):
 				sendAnswer(user["id"], answ = request.POST.get("message"))
-		
+
+
 	return render(request, "login.html", lg)
 
 

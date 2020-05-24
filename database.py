@@ -1,8 +1,5 @@
 import sqlite3
 
-
-
-
 def get(table_name, cols = "*"):
     db = sqlite3.connect('db.sqlite')
     cur = db.cursor()
