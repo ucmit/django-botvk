@@ -18,7 +18,7 @@ def bot(request):
 
 	# Подтверждение сервера
 	if body == { "type": "confirmation", "group_id": 194135848 }: # Берём запрос и ответ в CallBack API
-		return HttpResponse("8a7bcb98")
+		return HttpResponse("cbc1a21e")
 
 
 	# Определяем тип запроса. В данном случае "новое сообщение"
