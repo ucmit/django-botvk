@@ -1,13 +1,16 @@
 import os
 
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # !_______Добавляем адрес как доверенный__________________!
 # ssh -R 80:127.0.0.1:8000 botvkulan@ssh.localhost.run
 # ssh -R 80:127.0.0.1:8000 serveo.net
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "scindo.serveo.net", "bot-vk-ulan.herokuapp.com"]
 CORS_ORIGIN_WHITELIST = ["https://bot-vk-ulan.herokuapp.com"]
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
 SECRET_KEY = 'h)pmtabv3fhm+x#r3e6#drt=p7fag0rw4q40#-eot6g_e&&+-5'
 DEBUG = True
 INSTALLED_APPS = [
@@ -69,4 +72,4 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-STATIC_URL = '/static/'
+
