@@ -5,7 +5,7 @@ import os
 # ssh -R 80:127.0.0.1:8000 botvkulan@ssh.localhost.run
 # ssh -R 80:127.0.0.1:8000 serveo.net
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "scindo.serveo.net", "bot-vk-ulan.herokuapp.com"]
-
+CORS_ORIGIN_WHITELIST = ["https://bot-vk-ulan.herokuapp.com"]
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'h)pmtabv3fhm+x#r3e6#drt=p7fag0rw4q40#-eot6g_e&&+-5'
