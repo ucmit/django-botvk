@@ -4,7 +4,7 @@ import os
 # !_______Добавляем адрес как доверенный__________________!
 # ssh -R 80:127.0.0.1:8000 botvkulan@ssh.localhost.run
 # ssh -R 80:127.0.0.1:8000 serveo.net
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "scindo.serveo.net"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "scindo.serveo.net", "bot-vk-ulan.herokuapp.com"]
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
